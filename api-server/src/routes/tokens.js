@@ -1,7 +1,7 @@
 const express = require('express');
 const logger = require('../utils/logger');
 const dbManager = require('../config/database');
-const { authenticateJWT, authenticateApiKey } = require('../middleware/auth');
+const { authenticateApiKey } = require('../middleware/auth');
 
 const router = express.Router();
 
@@ -9,16 +9,23 @@ const router = express.Router();
  * POST /api/tokens/login
  * Đăng ký ExpoPushToken cho user (từ mobile app)
  * Luồng 1: Admin Đăng nhập và Đăng ký Thiết bị
+ * Không cần JWT - chỉ cần username trong body
  */
-router.post('/login', authenticateJWT, (req, res) => {
+router.post('/login', (req, res) => {
   try {
-    const { token, deviceInfo } = req.body;
-    const username = req.user.username; // Lấy từ JWT
+    const { token, deviceInfo, username } = req.body;
 
     if (!token) {
       return res.status(400).json({ 
         error: 'Bad Request',
         message: 'Push token is required' 
+      });
+    }
+
+    if (!username) {
+      return res.status(400).json({ 
+        error: 'Bad Request',
+        message: 'Username is required' 
       });
     }
 
@@ -72,16 +79,23 @@ router.post('/login', authenticateJWT, (req, res) => {
  * POST /api/tokens/logout
  * Hủy đăng ký ExpoPushToken (từ mobile app)
  * Luồng 3: Admin Đăng xuất
+ * Không cần JWT - chỉ cần username trong body
  */
-router.post('/logout', authenticateJWT, (req, res) => {
+router.post('/logout', (req, res) => {
   try {
-    const { token } = req.body;
-    const username = req.user.username;
+    const { token, username } = req.body;
 
     if (!token) {
       return res.status(400).json({ 
         error: 'Bad Request',
         message: 'Push token is required' 
+      });
+    }
+
+    if (!username) {
+      return res.status(400).json({ 
+        error: 'Bad Request',
+        message: 'Username is required' 
       });
     }
 
@@ -173,10 +187,19 @@ router.get('/get-tokens-for-users', authenticateApiKey, (req, res) => {
 /**
  * GET /api/tokens/my-tokens
  * Lấy danh sách tokens của user hiện tại (từ mobile app)
+ * Không cần JWT - username được truyền qua query parameter
  */
-router.get('/my-tokens', authenticateJWT, (req, res) => {
+router.get('/my-tokens', (req, res) => {
   try {
-    const username = req.user.username;
+    const { username } = req.query;
+
+    if (!username) {
+      return res.status(400).json({ 
+        error: 'Bad Request',
+        message: 'Username is required' 
+      });
+    }
+
     const db = dbManager.getDatabase();
 
     const stmt = db.prepare(`

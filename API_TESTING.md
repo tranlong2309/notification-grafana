@@ -63,21 +63,18 @@ curl -X POST http://localhost:3000/api/auth/login-auth \
 
 ## Token Management
 
+**LƯU Ý:** Token management endpoints KHÔNG cần JWT authentication. Chỉ cần gửi username trong request body hoặc query parameter.
+
 ### Đăng ký Push Token
 
 **Endpoint:** `POST /api/tokens/login`
-
-**Headers:**
-```
-Authorization: Bearer <JWT_TOKEN>
-```
 
 **Request:**
 ```bash
 curl -X POST http://localhost:3000/api/tokens/login \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
   -d '{
+    "username": "admin",
     "token": "ExponentPushToken[xxxxxxxxxxxxxxxxxxxxxx]",
     "deviceInfo": {
       "brand": "Apple",
@@ -101,17 +98,12 @@ curl -X POST http://localhost:3000/api/tokens/login \
 
 **Endpoint:** `POST /api/tokens/logout`
 
-**Headers:**
-```
-Authorization: Bearer <JWT_TOKEN>
-```
-
 **Request:**
 ```bash
 curl -X POST http://localhost:3000/api/tokens/logout \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
   -d '{
+    "username": "admin",
     "token": "ExponentPushToken[xxxxxxxxxxxxxxxxxxxxxx]"
   }'
 ```
@@ -148,15 +140,9 @@ ExponentPushToken[yyyyyyyyyyyyyyyyyyyyyy]
 
 **Endpoint:** `GET /api/tokens/my-tokens`
 
-**Headers:**
-```
-Authorization: Bearer <JWT_TOKEN>
-```
-
 **Request:**
 ```bash
-curl -X GET http://localhost:3000/api/tokens/my-tokens \
-  -H "Authorization: Bearer YOUR_JWT_TOKEN"
+curl -X GET "http://localhost:3000/api/tokens/my-tokens?username=admin"
 ```
 
 **Response:**

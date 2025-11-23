@@ -60,8 +60,9 @@ sudo cp zabbix_to_expo.sh /usr/lib/zabbix/alertscripts/
 ## Bảo Mật
 
 - API key cho requests từ Zabbix
-- JWT authentication cho mobile app
+- Token management dựa trên username (không cần JWT authentication)
 - HTTPS cho tất cả connections
+- Rate limiting để tránh abuse
 
 ## Log Files
 

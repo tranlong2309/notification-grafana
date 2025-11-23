@@ -49,21 +49,19 @@ Quét QR code bằng Expo Go app trên điện thoại.
 # 1. Health check
 curl http://localhost:3000/health
 
-# 2. Login
-curl -X POST http://localhost:3000/api/auth/login-auth \
-  -H "Content-Type: application/json" \
-  -d '{"username":"admin","password":"admin123"}'
-
-# Lưu token từ response
-
-# 3. Đăng ký push token (thay YOUR_JWT_TOKEN)
+# 2. Đăng ký push token (KHÔNG cần authentication)
 curl -X POST http://localhost:3000/api/tokens/login \
   -H "Content-Type: application/json" \
-  -H "Authorization: Bearer YOUR_JWT_TOKEN" \
-  -d '{"token":"ExponentPushToken[test-token-123]"}'
+  -d '{
+    "username":"testuser",
+    "token":"ExponentPushToken[test-token-123]"
+  }'
+
+# 3. Lấy tokens của user
+curl -X GET "http://localhost:3000/api/tokens/my-tokens?username=testuser"
 
 # 4. Lấy tokens cho users (dành cho Zabbix)
-curl -X GET "http://localhost:3000/api/tokens/get-tokens-for-users?users=admin" \
+curl -X GET "http://localhost:3000/api/tokens/get-tokens-for-users?users=testuser" \
   -H "x-api-key: your-secret-api-key-change-this-in-production"
 ```
 
